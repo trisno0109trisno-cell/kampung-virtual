@@ -1,0 +1,9 @@
+node_modules
+.env
+.env.*
+!.env.example
+.git
+data-kampung.bak.json
+data-kampung.corrupt.*.json
+*.log
+*.tmp
