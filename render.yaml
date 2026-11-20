@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: kampung-virtual
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ADMIN_PIN
+        value: "1234"

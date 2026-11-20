@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Environment variables & secret keys (JANGAN diunggah ke GitHub)
+.env
+.env.local
+.env.*.local
+
+# Local backup / temporary runtime files
+data-kampung.bak.json
+data-kampung.corrupt.*.json
+data-kampung.json.tmp
+
+# Logs & OS files
+*.log
+.DS_Store
+Thumbs.db

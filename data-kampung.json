@@ -1,0 +1,605 @@
+{
+  "citizens": [
+    {
+      "id": "cit_founder_budi",
+      "name": "Pak RT Budi",
+      "role": "Pengurus Kampung",
+      "avatar": {
+        "shirtColor": "#5f8d63",
+        "hairStyle": "topi_jerami"
+      },
+      "joinedAt": "2026-11-19T01:41:28.387Z"
+    },
+    {
+      "id": "cit_founder_sari",
+      "name": "Teh Sari",
+      "role": "Peracik Kopi & Kebun",
+      "avatar": {
+        "shirtColor": "#c86d4b",
+        "hairStyle": "sanggul"
+      },
+      "joinedAt": "2026-11-19T01:41:28.387Z"
+    },
+    {
+      "id": "cit_mwmw05x8_a82555",
+      "name": "Nadia Kirana",
+      "role": "Desainer Taman",
+      "avatar": {
+        "shirtColor": "#c86d4b",
+        "hairStyle": "panjang"
+      },
+      "joinedAt": "2026-11-19T01:44:16.124Z",
+      "lastSeenAt": "2026-11-19T02:29:34.814Z",
+      "updatedAt": "2026-11-19T02:14:53.404Z"
+    },
+    {
+      "id": "cit_mwmxwu07_b68932",
+      "name": "Akung Syavira",
+      "role": "Pak Kades",
+      "avatar": {
+        "shirtColor": "#5f8d63",
+        "hairStyle": "topi_jerami"
+      },
+      "joinedAt": "2026-11-19T02:37:39.944Z",
+      "lastSeenAt": "2026-11-19T02:51:14.923Z"
+    },
+    {
+      "id": "cit_mwmxwwfx_6092ab",
+      "name": "Bima",
+      "role": "Pencinta Kopi",
+      "avatar": {
+        "shirtColor": "#c86d4b",
+        "hairStyle": "pendek"
+      },
+      "joinedAt": "2026-11-19T02:37:43.101Z",
+      "lastSeenAt": "2026-11-20T07:37:18.485Z",
+      "updatedAt": "2026-11-19T02:54:44.431Z"
+    },
+    {
+      "id": "cit_mwmyxwe4_a317ec",
+      "name": "Pak Kades",
+      "role": "Kepala Desa",
+      "avatar": {
+        "shirtColor": "#c86d4b",
+        "hairStyle": "topi_jerami"
+      },
+      "joinedAt": "2026-11-19T03:06:29.308Z",
+      "lastSeenAt": "2026-11-20T07:37:18.474Z"
+    }
+  ],
+  "mading": [
+    {
+      "id": "mad_mwmwnx6y_7b5f38",
+      "author": "Pak Kades",
+      "authorId": "cit_mwmyxwe4_a317ec",
+      "role": "Kepala Desa",
+      "category": "Pengumuman",
+      "color": "cream",
+      "text": "salam kenal, aku Akung Syavira, Pak Kades di kampung hijau",
+      "createdAt": "2026-11-19T02:02:44.554Z"
+    },
+    {
+      "id": "mad_mwmw23tz_9bb2dd",
+      "author": "Nadia Kirana",
+      "authorId": "cit_mwmw05x8_a82555",
+      "role": "Desainer Taman",
+      "category": "Perkenalan",
+      "color": "cream",
+      "text": "Salam kenal semuanya, yuk berkebun bareng akhir pekan ini!",
+      "createdAt": "2026-11-19T01:45:46.727Z"
+    },
+    {
+      "id": "mad_seed_1",
+      "author": "Pak RT Budi",
+      "role": "Pengurus Kampung",
+      "category": "Pengumuman",
+      "color": "cream",
+      "text": "Selamat datang di Kampung Hijau Harmoni! Mari saling sapa, bersantai di Pendopo Barat, dan bangun kavling hijau bersama-sama.",
+      "createdAt": "2026-11-19T01:41:28.387Z"
+    },
+    {
+      "id": "mad_seed_2",
+      "author": "Teh Sari",
+      "role": "Peracik Kopi & Kebun",
+      "category": "Ajakan",
+      "color": "amber",
+      "text": "Sore ini ada seduh kopi hangat di area Pendopo & pinggir kolam. Mampir ya, tetangga!",
+      "createdAt": "2026-11-19T01:41:28.387Z"
+    },
+    {
+      "id": "mad_seed_3",
+      "author": "Warga Harmoni",
+      "role": "Komunitas Hijau",
+      "category": "Tips",
+      "color": "sage",
+      "text": "Gunakan menu \"Bangun & Tanam\" di bawah layar untuk mendirikan Rumah Kayu-Kaca berlabel namamu, menanam pohon, atau menambah lampu taman.",
+      "createdAt": "2026-11-19T01:41:28.387Z"
+    }
+  ],
+  "buildings": [
+    {
+      "id": "bld_seed_house",
+      "type": "rumah",
+      "x": 340,
+      "y": 200,
+      "label": "Rumah Pak RT",
+      "ownerName": "Pak RT Budi",
+      "ownerId": "cit_founder_budi",
+      "createdAt": "2026-11-19T01:41:28.387Z"
+    },
+    {
+      "id": "bld_seed_tree_1",
+      "type": "pohon",
+      "x": 460,
+      "y": 210,
+      "label": "",
+      "ownerName": "Pak RT Budi",
+      "ownerId": "cit_founder_budi",
+      "createdAt": "2026-11-19T01:41:28.387Z"
+    },
+    {
+      "id": "bld_seed_bench",
+      "type": "bangku",
+      "x": 1120,
+      "y": 620,
+      "label": "",
+      "ownerName": "Teh Sari",
+      "ownerId": "cit_founder_sari",
+      "createdAt": "2026-11-19T01:41:28.387Z"
+    },
+    {
+      "id": "bld_seed_lamp",
+      "type": "lampu",
+      "x": 410,
+      "y": 270,
+      "label": "",
+      "ownerName": "Pak RT Budi",
+      "ownerId": "cit_founder_budi",
+      "createdAt": "2026-11-19T01:41:28.387Z"
+    },
+    {
+      "id": "bld_mwmw2w1i_836a4d",
+      "type": "lampu",
+      "x": 1180,
+      "y": 480,
+      "label": "",
+      "ownerName": "Nadia Kirana",
+      "ownerId": "cit_mwmw05x8_a82555",
+      "createdAt": "2026-11-19T01:46:23.286Z"
+    },
+    {
+      "id": "bld_mwmw8r4n_6060f4",
+      "type": "pohon",
+      "x": 540,
+      "y": 860,
+      "label": "",
+      "ownerName": "Nadia Kirana",
+      "ownerId": "cit_mwmw05x8_a82555",
+      "createdAt": "2026-11-19T01:50:56.855Z"
+    },
+    {
+      "id": "bld_mwmwppvt_24b867",
+      "type": "rumah",
+      "x": 1560,
+      "y": 400,
+      "label": "Rumah Pak Kades",
+      "ownerName": "Pak Kades",
+      "ownerId": "cit_mwmyxwe4_a317ec",
+      "createdAt": "2026-11-19T02:04:08.393Z",
+      "updatedAt": "2026-11-19T03:27:29.080Z"
+    },
+    {
+      "id": "bld_mwmwq788_e76cce",
+      "type": "jalan",
+      "x": 1240,
+      "y": 480,
+      "label": "",
+      "ownerName": "Nadia Kirana",
+      "ownerId": "cit_mwmw05x8_a82555",
+      "createdAt": "2026-11-19T02:04:30.872Z"
+    },
+    {
+      "id": "bld_mwmwq80f_38ddfd",
+      "type": "jalan",
+      "x": 1200,
+      "y": 520,
+      "label": "",
+      "ownerName": "Nadia Kirana",
+      "ownerId": "cit_mwmw05x8_a82555",
+      "createdAt": "2026-11-19T02:04:31.887Z"
+    },
+    {
+      "id": "bld_mwmwqb4v_bbb870",
+      "type": "jalan",
+      "x": 1160,
+      "y": 520,
+      "label": "",
+      "ownerName": "Nadia Kirana",
+      "ownerId": "cit_mwmw05x8_a82555",
+      "createdAt": "2026-11-19T02:04:35.935Z"
+    },
+    {
+      "id": "bld_mwmwqc39_346d3a",
+      "type": "jalan",
+      "x": 1120,
+      "y": 520,
+      "label": "",
+      "ownerName": "Nadia Kirana",
+      "ownerId": "cit_mwmw05x8_a82555",
+      "createdAt": "2026-11-19T02:04:37.173Z"
+    },
+    {
+      "id": "bld_mwmwqf02_71dffb",
+      "type": "jalan",
+      "x": 1240,
+      "y": 520,
+      "label": "",
+      "ownerName": "Nadia Kirana",
+      "ownerId": "cit_mwmw05x8_a82555",
+      "createdAt": "2026-11-19T02:04:40.946Z"
+    },
+    {
+      "id": "bld_mwmyj8xl_39d5a9",
+      "type": "bangku",
+      "x": 1160,
+      "y": 220,
+      "label": "",
+      "ownerName": "Bima",
+      "ownerId": "cit_mwmxwwfx_6092ab",
+      "createdAt": "2026-11-19T02:55:05.721Z"
+    },
+    {
+      "id": "bld_mwn33fuk_6d1cf6",
+      "type": "pohon",
+      "x": 400,
+      "y": 960,
+      "label": "",
+      "ownerName": "Bima",
+      "ownerId": "cit_mwmxwwfx_6092ab",
+      "createdAt": "2026-11-19T05:02:46.268Z"
+    },
+    {
+      "id": "bld_mwn5m714_dbf264",
+      "type": "kopdes",
+      "x": 1160,
+      "y": 940,
+      "label": "KOPDES",
+      "ownerName": "Pak Kades",
+      "ownerId": "cit_mwmyxwe4_a317ec",
+      "createdAt": "2026-11-19T06:13:20.536Z"
+    },
+    {
+      "id": "bld_mwn5nljr_f4e2ca",
+      "type": "usaha",
+      "x": 1360,
+      "y": 940,
+      "label": "Kedai Kopi Bima",
+      "ownerName": "Bima",
+      "ownerId": "cit_mwmxwwfx_6092ab",
+      "createdAt": "2026-11-19T06:14:26.007Z",
+      "business": {
+        "name": "Kedai Kopi Bima",
+        "category": "Kedai Kopi",
+        "promo": "Kopi susu gula aren hangat setiap sore! https://kopibima.id"
+      },
+      "likes": 1,
+      "likedBy": [
+        "cit_mwmyxwe4_a317ec"
+      ]
+    },
+    {
+      "id": "bld_mwn95s1n_2dd94e",
+      "type": "jalan",
+      "x": 1040,
+      "y": 960,
+      "label": "",
+      "ownerName": "Pak Kades",
+      "ownerId": "cit_mwmyxwe4_a317ec",
+      "createdAt": "2026-11-19T07:52:33.083Z"
+    },
+    {
+      "id": "bld_mwn95ssz_aa3f05",
+      "type": "jalan",
+      "x": 1080,
+      "y": 960,
+      "label": "",
+      "ownerName": "Pak Kades",
+      "ownerId": "cit_mwmyxwe4_a317ec",
+      "createdAt": "2026-11-19T07:52:34.067Z"
+    }
+  ],
+  "settings": {
+    "maxHousesPerCitizen": 1,
+    "ambiance": "sore",
+    "megaphoneAllowedIds": [],
+    "festivalMode": true
+  },
+  "kopdes": {
+    "treasury": 180,
+    "members": [
+      {
+        "citizenId": "cit_mwmyxwe4_a317ec",
+        "name": "Pak Kades",
+        "role": "Kepala Desa",
+        "points": 5,
+        "lastClaimDate": "2026-11-19",
+        "joinedAt": "2026-11-19T06:13:21.454Z"
+      },
+      {
+        "citizenId": "cit_founder_budi",
+        "name": "Pak RT Budi",
+        "role": "Pengurus Kampung",
+        "points": 50,
+        "lastClaimDate": "",
+        "joinedAt": "2026-11-19T06:12:29.567Z"
+      },
+      {
+        "citizenId": "cit_founder_sari",
+        "name": "Teh Sari",
+        "role": "Peracik Kopi & Kebun",
+        "points": 50,
+        "lastClaimDate": "",
+        "joinedAt": "2026-11-19T06:12:29.567Z"
+      }
+    ]
+  },
+  "fishing": {
+    "anglers": [
+      {
+        "citizenId": "cit_mwmyxwe4_a317ec",
+        "name": "Pak Kades",
+        "role": "Kepala Desa",
+        "totalPoints": 45,
+        "totalCatches": 2,
+        "bestCatch": "Ikan Koi Emas 🐟✨",
+        "bestPoints": 30,
+        "updatedAt": "2026-11-19T06:59:32.201Z"
+      }
+    ],
+    "tournament": {
+      "active": false,
+      "mode": "manual",
+      "title": "Lomba Mancing Akhir Pekan",
+      "startedAt": null,
+      "endsAt": null,
+      "startedBy": "",
+      "manualEndedWeekendKey": "",
+      "scores": []
+    },
+    "championCitizenId": "cit_mwmyxwe4_a317ec",
+    "championName": "Pak Kades",
+    "history": [
+      {
+        "id": "his_mwn7a1ag_25007f",
+        "title": "Lomba Mancing Kilat (15 Menit)",
+        "endedAt": "2026-11-19T06:59:52.456Z",
+        "endedBy": "Pak Kades",
+        "winners": [
+          {
+            "rank": 1,
+            "citizenId": "cit_mwmyxwe4_a317ec",
+            "name": "Pak Kades",
+            "role": "Kepala Desa",
+            "points": 15,
+            "catches": 1,
+            "bestCatch": "Ikan Nila 🐠"
+          }
+        ]
+      }
+    ]
+  },
+  "nightMarket": {
+    "pointsByCitizen": {
+      "cit_mwmyxwe4_a317ec": 10
+    }
+  },
+  "housingCluster": {
+    "blockCount": 3,
+    "kavlings": [
+      {
+        "id": "A-01",
+        "block": "A",
+        "code": "Blok A-01",
+        "x": 1848,
+        "y": 756,
+        "w": 124,
+        "h": 116,
+        "centerX": 1910,
+        "centerY": 814,
+        "visitX": 1910,
+        "visitY": 903,
+        "occupiedByBuildingId": null,
+        "ownerId": "",
+        "ownerName": "",
+        "houseLabel": ""
+      },
+      {
+        "id": "A-02",
+        "block": "A",
+        "code": "Blok A-02",
+        "x": 1986,
+        "y": 756,
+        "w": 124,
+        "h": 116,
+        "centerX": 2048,
+        "centerY": 814,
+        "visitX": 2048,
+        "visitY": 903,
+        "occupiedByBuildingId": null,
+        "ownerId": "",
+        "ownerName": "",
+        "houseLabel": ""
+      },
+      {
+        "id": "A-03",
+        "block": "A",
+        "code": "Blok A-03",
+        "x": 2170,
+        "y": 756,
+        "w": 124,
+        "h": 116,
+        "centerX": 2232,
+        "centerY": 814,
+        "visitX": 2232,
+        "visitY": 903,
+        "occupiedByBuildingId": null,
+        "ownerId": "",
+        "ownerName": "",
+        "houseLabel": ""
+      },
+      {
+        "id": "A-04",
+        "block": "A",
+        "code": "Blok A-04",
+        "x": 2308,
+        "y": 756,
+        "w": 124,
+        "h": 116,
+        "centerX": 2370,
+        "centerY": 814,
+        "visitX": 2370,
+        "visitY": 903,
+        "occupiedByBuildingId": null,
+        "ownerId": "",
+        "ownerName": "",
+        "houseLabel": ""
+      },
+      {
+        "id": "B-01",
+        "block": "B",
+        "code": "Blok B-01",
+        "x": 1848,
+        "y": 562,
+        "w": 124,
+        "h": 116,
+        "centerX": 1910,
+        "centerY": 620,
+        "visitX": 1910,
+        "visitY": 709,
+        "occupiedByBuildingId": null,
+        "ownerId": "",
+        "ownerName": "",
+        "houseLabel": ""
+      },
+      {
+        "id": "B-02",
+        "block": "B",
+        "code": "Blok B-02",
+        "x": 1986,
+        "y": 562,
+        "w": 124,
+        "h": 116,
+        "centerX": 2048,
+        "centerY": 620,
+        "visitX": 2048,
+        "visitY": 709,
+        "occupiedByBuildingId": null,
+        "ownerId": "",
+        "ownerName": "",
+        "houseLabel": ""
+      },
+      {
+        "id": "B-03",
+        "block": "B",
+        "code": "Blok B-03",
+        "x": 2170,
+        "y": 562,
+        "w": 124,
+        "h": 116,
+        "centerX": 2232,
+        "centerY": 620,
+        "visitX": 2232,
+        "visitY": 709,
+        "occupiedByBuildingId": null,
+        "ownerId": "",
+        "ownerName": "",
+        "houseLabel": ""
+      },
+      {
+        "id": "B-04",
+        "block": "B",
+        "code": "Blok B-04",
+        "x": 2308,
+        "y": 562,
+        "w": 124,
+        "h": 116,
+        "centerX": 2370,
+        "centerY": 620,
+        "visitX": 2370,
+        "visitY": 709,
+        "occupiedByBuildingId": null,
+        "ownerId": "",
+        "ownerName": "",
+        "houseLabel": ""
+      },
+      {
+        "id": "C-01",
+        "block": "C",
+        "code": "Blok C-01",
+        "x": 1848,
+        "y": 368,
+        "w": 124,
+        "h": 116,
+        "centerX": 1910,
+        "centerY": 426,
+        "visitX": 1910,
+        "visitY": 515,
+        "occupiedByBuildingId": null,
+        "ownerId": "",
+        "ownerName": "",
+        "houseLabel": ""
+      },
+      {
+        "id": "C-02",
+        "block": "C",
+        "code": "Blok C-02",
+        "x": 1986,
+        "y": 368,
+        "w": 124,
+        "h": 116,
+        "centerX": 2048,
+        "centerY": 426,
+        "visitX": 2048,
+        "visitY": 515,
+        "occupiedByBuildingId": null,
+        "ownerId": "",
+        "ownerName": "",
+        "houseLabel": ""
+      },
+      {
+        "id": "C-03",
+        "block": "C",
+        "code": "Blok C-03",
+        "x": 2170,
+        "y": 368,
+        "w": 124,
+        "h": 116,
+        "centerX": 2232,
+        "centerY": 426,
+        "visitX": 2232,
+        "visitY": 515,
+        "occupiedByBuildingId": null,
+        "ownerId": "",
+        "ownerName": "",
+        "houseLabel": ""
+      },
+      {
+        "id": "C-04",
+        "block": "C",
+        "code": "Blok C-04",
+        "x": 2308,
+        "y": 368,
+        "w": 124,
+        "h": 116,
+        "centerX": 2370,
+        "centerY": 426,
+        "visitX": 2370,
+        "visitY": 515,
+        "occupiedByBuildingId": null,
+        "ownerId": "",
+        "ownerName": "",
+        "houseLabel": ""
+      }
+    ]
+  }
+}

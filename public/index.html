@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Kampung Hijau Harmoni — Perkampungan Komunitas Interaktif</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <!-- Main Interactive Village Canvas -->
+  <canvas id="villageCanvas" aria-label="Peta Interaktif Kampung Hijau Harmoni"></canvas>
+
+  <!-- Welcome / Auto-Join Modal -->
+  <div id="welcomeOverlay" class="overlay visible" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+    <div class="welcome-card">
+      <div class="welcome-header">
+        <span class="eco-pill">🌿 Perkampungan Modern &amp; Hangat</span>
+        <h1 id="welcomeTitle">Kampung Hijau Harmoni</h1>
+        <p class="welcome-subtitle">
+          Sapa tetangga, tulis pesan di Mading Alun-alun, dan bangun kawasan hijau bersama secara real-time.
+        </p>
+        <div class="welcome-stats">
+          <span><i class="dot-online"></i> <strong id="welcomeOnline">0</strong> sedang online</span>
+          <span class="sep">•</span>
+          <span>🏡 <strong id="welcomeTotal">0</strong> warga terdaftar</span>
+        </div>
+      </div>
+
+      <form id="joinForm" class="welcome-body" autocomplete="off">
+        <div class="avatar-studio">
+          <div class="avatar-preview-wrap">
+            <canvas id="avatarPreview" width="136" height="136"></canvas>
+            <span class="avatar-caption">Pratinjau Warga</span>
+          </div>
+          <div class="avatar-fields">
+            <div class="form-group">
+              <label for="inputName">Nama Panggilan <span class="req">*</span></label>
+              <input
+                type="text"
+                id="inputName"
+                maxlength="24"
+                placeholder="Contoh: Raka, Nisa, Pak Dimas..."
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="inputRole">Peran / Hobi Singkat <span class="opt">(opsional)</span></label>
+              <input
+                type="text"
+                id="inputRole"
+                maxlength="32"
+                placeholder="Contoh: Pecinta Kopi, Tukang Kebun..."
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="customizer-section">
+          <div class="customizer-block">
+            <label>Warna Baju</label>
+            <div id="shirtColorPicker" class="color-swatches"></div>
+          </div>
+          <div class="customizer-block">
+            <label>Gaya Rambut / Topi</label>
+            <div id="hairStylePicker" class="style-pills"></div>
+          </div>
+        </div>
+
+        <p id="joinError" class="form-error" hidden></p>
+
+        <button type="submit" id="btnJoin" class="btn-primary btn-join">
+          <span>🏡 Gabung ke Kampung</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- In-Game HUD (Visible after joining) -->
+  <div id="gameHud" class="hud hidden">
+    <!-- Top Bar -->
+    <header class="hud-top">
+      <div class="hud-brand-group">
+        <div class="brand-badge">
+          <span class="brand-leaf">🌿</span>
+          <div class="brand-info">
+            <div class="brand-title">Kampung Hijau</div>
+            <div class="profile-row">
+              <span class="brand-sub" id="hudMyProfile">Alun-alun Harmoni</span>
+              <button
+                type="button"
+                id="btnEditProfile"
+                class="btn-edit-pencil"
+                title="Edit Profil / Ganti Nama"
+                aria-label="Edit Profil / Ganti Nama"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                  <path d="m15 5 4 4"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" id="btnKadesMenu" class="hud-chip chip-kades" title="Akses Panel Kontrol Pak Kades (Admin · PIN: 1234)">
+          <span id="kadesBtnIcon">👑</span>
+          <span id="kadesBtnLabel">Menu Pak Kades</span>
+        </button>
+
+        <button type="button" id="btnOpenMading" class="hud-chip chip-wood" title="Buka Papan Pengumuman Kampung">
+          <span>📌 Mading</span>
+          <span id="madingBadgeCount" class="mini-count">0</span>
+        </button>
+
+        <button type="button" id="btnFishingLeaderboard" class="hud-chip chip-pond" title="Buka Klasemen Mancing Mania">
+          <span>🏆 Klasemen Mancing</span>
+        </button>
+
+        <button type="button" id="btnGoNightMarket" class="hud-chip chip-market" title="Jalan menuju Area Pasar Malam & Hiburan">
+          <span>🎪 Pasar Malam</span>
+        </button>
+
+        <button type="button" id="btnGoCluster" class="hud-chip chip-cluster" title="Menuju Area Komplek Perumahan (Cluster Hunian Warga)">
+          <span>🏘️ Komplek</span>
+        </button>
+
+        <div class="ambiance-switch" role="group" aria-label="Pilih Suasana Cahaya">
+          <button type="button" class="amb-btn" data-ambiance="pagi" title="Pagi Cerah">☀️</button>
+          <button type="button" class="amb-btn active" data-ambiance="sore" title="Sore Hangat">🌤️</button>
+          <button type="button" class="amb-btn" data-ambiance="senja" title="Malam Berlampu">🌙</button>
+        </div>
+      </div>
+
+      <div class="hud-stats-group">
+        <button type="button" id="btnActiveCitizens" class="stats-pill stats-pill-btn" title="Tampilkan atau Sembunyikan Daftar Pengunjung Online">
+          <span class="stat-item"><i class="dot-online"></i><strong id="hudOnlineCount">0</strong> Online</span>
+          <span class="stat-divider"></span>
+          <span class="stat-item">🏡 <strong id="hudTotalCitizens">0</strong> Warga</span>
+          <span class="stats-caret">▾</span>
+        </button>
+
+        <button type="button" id="btnToggleChat" class="hud-chip chip-chat" aria-label="Buka atau Tutup Chat">
+          <span>💬</span>
+          <span class="chat-btn-label">Obrolan</span>
+          <span id="chatUnreadDot" class="unread-dot" hidden></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Golden Weekend Fishing Tournament Banner -->
+    <div id="tournamentBanner" class="tournament-banner" hidden aria-live="polite">
+      <div class="tb-main">
+        <span class="tb-title" id="tournamentBannerTitle">🏆 LOMBA MANCING AKHIR PEKAN SEDANG BERLANGSUNG!</span>
+        <span class="tb-countdown" id="tournamentCountdown">⏱️ 00:00:00</span>
+      </div>
+      <button type="button" id="btnOpenTournamentStandings" class="tb-btn">📊 Klasemen Lomba</button>
+    </div>
+
+    <!-- Festive Mode Banner (shown when Pak Kades activates Festival Pasar Malam) -->
+    <div id="festivalBanner" class="festival-banner" hidden aria-live="polite">
+      <span>🎆 FESTIVAL PASAR MALAM SEDANG MERIAH! ✨</span>
+      <button type="button" id="btnFestivalVisit" class="fb-btn">🎪 Ke Pasar Malam</button>
+    </div>
+
+    <!-- Live Megaphone Audio Broadcast Banner -->
+    <div id="megaphoneBanner" class="megaphone-banner" hidden aria-live="polite">
+      <div class="meg-eq" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <span id="megaphoneBannerText">📢 Pak Kades berbicara lewat Megafon...</span>
+      <button type="button" id="btnReplayMegaphone" class="btn-meg-play" hidden>🔊 Putar Suara</button>
+    </div>
+
+    <!-- Camera Focus Banner (shown when spotlighting another online visitor) -->
+    <div id="cameraFocusBanner" class="camera-focus-banner" hidden>
+      <span id="cameraFocusLabel">👁️ Menyorot lokasi warga</span>
+      <button type="button" id="btnReturnCamera" class="btn-return-cam">Kembali ke Karakterku</button>
+    </div>
+
+    <!-- Right HUD Stack: Online Citizens Panel + Side Live Chat -->
+    <div class="hud-right-stack">
+      <!-- Warga & Pengunjung Online Panel -->
+      <section id="onlinePanel" class="online-panel" aria-label="Daftar Warga dan Pengunjung Online">
+        <div class="online-panel-header">
+          <div>
+            <h3>👥 Warga &amp; Pengunjung Online</h3>
+            <span class="chat-hint">Klik nama untuk menyorot lokasinya</span>
+          </div>
+          <button type="button" id="btnCloseCitizens" class="icon-btn mini" title="Sembunyikan Daftar Pengunjung" aria-label="Tutup Daftar Pengunjung">✕</button>
+        </div>
+        <ul id="activeCitizensList" class="citizens-list"></ul>
+      </section>
+
+      <!-- Collapsible Side Live Chat & Quick Reactions Panel -->
+      <aside id="chatPanel" class="chat-panel" aria-label="Panel Obrolan Warga">
+        <div class="chat-header">
+          <div>
+            <h3>💬 Obrolan Tetangga</h3>
+            <span class="chat-hint">Pesan tampil 6 detik di atas karakter</span>
+          </div>
+          <button type="button" id="btnCloseChat" class="icon-btn" title="Sembunyikan Panel Chat">✕</button>
+        </div>
+
+        <div id="chatMessages" class="chat-messages"></div>
+
+        <div class="reaction-strip" aria-label="Tombol Sapa Cepat">
+          <button type="button" class="rx-btn" data-reaction="wave" title="Lambaikan Tangan">👋 Sapa</button>
+          <button type="button" class="rx-btn" data-reaction="hello" title="Sapa Halo Tetangga!">🏡 Halo!</button>
+          <button type="button" class="rx-btn" data-reaction="coffee" title="Ajak Kopi Bareng">☕ Ngopi</button>
+          <button type="button" class="rx-btn" data-reaction="love" title="Beri Apresiasi">❤️ Keren</button>
+        </div>
+
+        <form id="chatForm" class="chat-form" autocomplete="off">
+          <input
+            type="text"
+            id="chatInput"
+            maxlength="160"
+            placeholder="Sapa tetangga di sini..."
+            aria-label="Ketik pesan obrolan"
+          />
+          <button type="submit" class="btn-send" title="Kirim Pesan">Kirim</button>
+        </form>
+      </aside>
+    </div>
+
+    <!-- Camera Angle Switcher & Zoom Controls (Bottom-Left above Minimap) -->
+    <div id="cameraControls" class="camera-controls" aria-label="Kontrol Sudut Pandang Kamera">
+      <div class="cam-top-row">
+        <button
+          type="button"
+          id="btnCameraCycle"
+          class="cam-cycle-btn"
+          title="Klik untuk berganti sudut pandang: Klasik → Isometrik 2.5D → Panorama Drone"
+        >
+          <span class="cam-icon" aria-hidden="true">🎥</span>
+          <span id="cameraModeLabel">Klasik</span>
+        </button>
+        <div class="cam-zoom-group" role="group" aria-label="Kontrol Zoom Kamera">
+          <button type="button" id="btnZoomOut" class="cam-zoom-btn" title="Zoom Out (−)" aria-label="Zoom Out">−</button>
+          <button type="button" id="btnZoomReset" class="cam-zoom-readout" title="Reset Zoom (100%)">100%</button>
+          <button type="button" id="btnZoomIn" class="cam-zoom-btn" title="Zoom In (+)" aria-label="Zoom In">+</button>
+        </div>
+      </div>
+      <div class="cam-mode-pills" role="group" aria-label="Pilih Sudut Pandang">
+        <button type="button" class="cam-mode-pill active" data-camera-mode="klasik" title="Mode 1: Klasik (Top-Down)">Klasik</button>
+        <button type="button" class="cam-mode-pill" data-camera-mode="iso" title="Mode 2: Isometrik 2.5D (Perspektif)">Iso 2.5D</button>
+        <button type="button" class="cam-mode-pill" data-camera-mode="drone" title="Mode 3: Panorama Drone (Wide View)">Drone</button>
+      </div>
+    </div>
+
+    <!-- Compact Live Minimap (Bottom-Left) -->
+    <div id="minimapCard" class="minimap-card" aria-label="Peta Kecil Lokasi Warga">
+      <div class="minimap-header">
+        <span>🗺️ Peta Kampung</span>
+        <span class="minimap-legend"><i class="dot-online"></i> Aktif</span>
+      </div>
+      <canvas id="minimapCanvas" width="180" height="120" title="Klik peta untuk menggeser atau kembali ke karakter"></canvas>
+    </div>
+
+    <!-- Floating Player Interaction Card (appears beside clicked visitor) -->
+    <div id="playerInteractionCard" class="player-card" hidden role="dialog" aria-label="Kartu Profil Warga">
+      <div class="player-card-header">
+        <div class="player-card-identity">
+          <span id="playerCardAvatarDot" class="player-card-dot"></span>
+          <div style="min-width:0">
+            <div id="playerCardName" class="player-card-name">Nama Warga</div>
+            <div id="playerCardRole" class="player-card-role">Warga Kampung</div>
+          </div>
+        </div>
+        <button type="button" id="btnClosePlayerCard" class="icon-btn mini" title="Tutup Kartu" aria-label="Tutup Kartu Profil">✕</button>
+      </div>
+
+      <div id="playerCardStatus" class="player-card-status">🌿 Warga Tetap · Online</div>
+
+      <div class="player-card-actions">
+        <button type="button" id="btnGreetTarget" class="pcard-btn pcard-greet">👋 Sapa Warga</button>
+        <button type="button" id="btnToggleDmInput" class="pcard-btn pcard-dm">💌 Kirim Pesan Pribadi</button>
+      </div>
+
+      <form id="cardDmForm" class="pcard-dm-form" hidden autocomplete="off">
+        <input
+          type="text"
+          id="cardDmInput"
+          maxlength="160"
+          placeholder="Tulis pesan pribadi (bisik)..."
+          aria-label="Tulis pesan pribadi"
+        />
+        <button type="submit" class="btn-send pcard-dm-send">Kirim</button>
+      </form>
+    </div>
+
+    <!-- Incoming Private Message (DM / Bisik) Notification Cards -->
+    <div id="dmNotificationStack" class="dm-stack" aria-live="polite" aria-label="Notifikasi Pesan Pribadi"></div>
+
+    <!-- Floating Quick Reactions Mini Bar (visible even when chat panel is collapsed) -->
+    <div id="floatingReactions" class="floating-reactions" aria-label="Sapa Cepat">
+      <button type="button" class="rx-fab" data-reaction="wave" title="Lambaikan Tangan">👋</button>
+      <button type="button" class="rx-fab" data-reaction="hello" title="Halo Tetangga!">🏡</button>
+      <button type="button" class="rx-fab" data-reaction="coffee" title="Kopi Bareng">☕</button>
+      <button type="button" class="rx-fab" data-reaction="love" title="Apresiasi">❤️</button>
+    </div>
+
+    <!-- Bottom Co-Building Menu ('Bangun & Tanam') -->
+    <section id="buildBar" class="build-bar" aria-label="Menu Bangun dan Tanam">
+      <!-- Area Mancing Mania Floating Action Bar (appears automatically near Dermaga Kayu) -->
+      <div id="fishingActionBar" class="fishing-action-bar" hidden aria-label="Aksi Mancing Mania">
+        <button type="button" id="btnFishAction" class="btn-fish-action">
+          <span id="fishActionText">🎣 Lempar Kail</span>
+          <span id="fishStrikeProgressWrap" class="fish-strike-bar-wrap" hidden>
+            <span id="fishStrikeBar" class="fish-strike-bar"></span>
+          </span>
+        </button>
+        <button type="button" id="btnFishBoardQuick" class="btn-fish-board" title="Lihat Top 5 Pemancing Terbaik">
+          🏆 Klasemen
+        </button>
+      </div>
+
+      <!-- Area Pasar Malam & Hiburan Contextual Action Bar -->
+      <div id="nightMarketActionBar" class="night-market-action-bar" hidden aria-label="Aksi Pasar Malam dan Hiburan">
+        <button type="button" id="btnNightMarketAction" class="btn-nm-action">
+          <span id="nmActionText">🍜 Jajan / Pesan</span>
+        </button>
+        <button type="button" id="btnStageAudioMute" class="btn-nm-mute" title="Nyalakan atau Matikan Musik Panggung">
+          🔊 Musik
+        </button>
+        <span id="nmPointsBadge" class="nm-points-badge" title="Total Poin Hiburan Pasar Malam">🎟️ 0 Poin</span>
+      </div>
+
+      <!-- Megafon Suara Push-to-Talk Dock (Visible in Mode Kades or for granted citizens) -->
+      <div id="megaphoneDock" class="megaphone-dock" hidden aria-label="Megafon Kampung">
+        <button type="button" id="btnMegaphonePtt" class="btn-megaphone-ptt" title="Tekan dan tahan untuk menyiarkan suara ke seluruh warga">
+          <span class="meg-mic-icon">🎙️</span>
+          <span id="megPttLabel">Megafon Kampung (Tahan)</span>
+          <span id="megTimer" class="meg-timer" hidden>00s</span>
+        </button>
+        <button type="button" id="btnMegaphoneChime" class="btn-megaphone-chime" title="Bunyikan Lonceng Sapaan Kampung ke seluruh warga">
+          🔔
+        </button>
+      </div>
+
+      <!-- Optional House Label Sub-bar when Rumah Kayu-Kaca is active -->
+      <div id="houseLabelBar" class="house-label-bar" hidden>
+        <label for="inputHouseLabel">🏷️ Label Rumah:</label>
+        <input type="text" id="inputHouseLabel" maxlength="24" placeholder="Rumah ..." />
+        <span class="label-hint">Klik lahan hijau untuk membangun</span>
+      </div>
+
+      <div class="build-bar-inner">
+        <div class="build-bar-title">
+          <span>🌱 Bangun &amp; Tanam</span>
+          <span id="buildStatusText" class="build-status">WASD / Panah / Tap untuk jalan</span>
+        </div>
+
+        <div class="build-items-row">
+          <div id="buildCatalogList" class="build-catalog-list"></div>
+          <div class="build-tools-divider"></div>
+          <button type="button" id="btnDeleteMode" class="build-tool-btn" title="Hapus item yang sudah dipasang">
+            <span class="b-icon">🗑️</span>
+            <span class="b-label">Hapus</span>
+          </button>
+          <button type="button" id="btnCancelBuild" class="build-tool-btn btn-cancel-mode" hidden title="Kembali ke mode jalan">
+            <span class="b-icon">✕</span>
+            <span class="b-label">Selesai</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mobile Virtual Joystick -->
+    <div id="mobileJoystick" class="joystick-zone" aria-label="Joystick Gerak">
+      <div id="joystickBase" class="joystick-base">
+        <div id="joystickKnob" class="joystick-knob"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mading Kampung Modal -->
+  <div id="madingModal" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="madingTitle">
+    <div class="mading-card">
+      <div class="mading-header">
+        <div>
+          <span class="mading-tag">🪵 Papan Pengumuman Alun-Alun</span>
+          <h2 id="madingTitle">Mading Kampung Hijau</h2>
+        </div>
+        <button type="button" id="btnCloseMading" class="icon-btn light" aria-label="Tutup Mading">✕</button>
+      </div>
+
+      <div class="mading-content">
+        <form id="madingForm" class="mading-compose">
+          <div class="compose-row">
+            <select id="madingCategory" aria-label="Kategori Catatan">
+              <option value="Pengumuman">📢 Pengumuman</option>
+              <option value="Perkenalan">👋 Perkenalan</option>
+              <option value="Ajakan">☕ Ajakan</option>
+              <option value="Tips">🌿 Tips Hijau</option>
+            </select>
+            <div id="madingColorPicker" class="note-color-dots" aria-label="Warna Kertas"></div>
+          </div>
+          <textarea
+            id="madingText"
+            rows="3"
+            maxlength="280"
+            placeholder="Tulis pengumuman, perkenalan dirimu, atau ajakan kumpul untuk seluruh warga..."
+            required
+          ></textarea>
+          <div class="compose-footer">
+            <span class="char-counter"><span id="madingCharCount">0</span>/280</span>
+            <button type="submit" class="btn-primary btn-post-note">📌 Tempel ke Mading</button>
+          </div>
+        </form>
+
+        <div class="mading-board-bg">
+          <div id="madingList" class="mading-grid"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Profile Modal -->
+  <div id="editProfileModal" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="editProfileTitle">
+    <div class="edit-profile-card">
+      <div class="edit-profile-header">
+        <div>
+          <span class="eco-pill">✏️ Profil Warga</span>
+          <h2 id="editProfileTitle">Edit Profil / Ganti Nama</h2>
+        </div>
+        <button type="button" id="btnCloseEditProfile" class="icon-btn" aria-label="Tutup Edit Profil">✕</button>
+      </div>
+
+      <form id="editProfileForm" class="edit-profile-form" autocomplete="off">
+        <div class="form-group">
+          <label for="editName">Nama Panggilan <span class="req">*</span></label>
+          <input
+            type="text"
+            id="editName"
+            maxlength="24"
+            placeholder="Masukkan nama panggilan baru..."
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="editRole">Peran / Hobi Singkat <span class="opt">(opsional)</span></label>
+          <input
+            type="text"
+            id="editRole"
+            maxlength="32"
+            placeholder="Contoh: Arsitek Hijau, Pecinta Kopi..."
+          />
+        </div>
+
+        <p class="edit-profile-note">
+          🏡 Perubahan nama otomatis memperbarui label di atas karakter, daftar warga aktif, dan kepemilikan rumahmu secara real-time.
+        </p>
+
+        <p id="editProfileError" class="form-error" hidden></p>
+
+        <div class="edit-profile-actions">
+          <button type="button" id="btnCancelEditProfile" class="btn-secondary">Batal</button>
+          <button type="submit" id="btnSaveProfile" class="btn-primary btn-save-profile">💾 Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Own House Nameplate Modal -->
+  <div id="editHouseModal" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="editHouseTitle">
+    <div class="edit-profile-card">
+      <div class="edit-profile-header">
+        <div>
+          <span class="eco-pill">🏡 Papan Nama Rumah</span>
+          <h2 id="editHouseTitle">Ubah Nama Rumahmu</h2>
+        </div>
+        <button type="button" id="btnCloseEditHouse" class="icon-btn" aria-label="Tutup Edit Rumah">✕</button>
+      </div>
+
+      <form id="editHouseForm" class="edit-profile-form" autocomplete="off">
+        <div class="form-group">
+          <label for="editHouseName">Nama Papan Rumah <span class="req">*</span></label>
+          <input
+            type="text"
+            id="editHouseName"
+            maxlength="24"
+            placeholder="Contoh: Rumah Pak Kades"
+            required
+          />
+        </div>
+
+        <p class="edit-profile-note">
+          🪵 Nama papan rumah tersimpan permanen di <code>data-kampung.json</code> dan langsung terlihat oleh seluruh warga secara real-time.
+        </p>
+
+        <p id="editHouseError" class="form-error" hidden></p>
+
+        <div class="edit-profile-actions">
+          <button type="button" id="btnCancelEditHouse" class="btn-secondary">Batal</button>
+          <button type="submit" id="btnSaveHouseName" class="btn-primary btn-save-profile">💾 Simpan Nama Rumah</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Pak Kades PIN Authentication Modal -->
+  <div id="kadesPinModal" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="kadesPinTitle">
+    <div class="edit-profile-card">
+      <div class="edit-profile-header">
+        <div>
+          <span class="eco-pill kades-pill">🛡️ Akses Khusus Admin</span>
+          <h2 id="kadesPinTitle">Masuk Mode Pak Kades</h2>
+        </div>
+        <button type="button" id="btnCloseKadesPin" class="icon-btn" aria-label="Tutup PIN Kades">✕</button>
+      </div>
+
+      <form id="kadesPinForm" class="edit-profile-form" autocomplete="off">
+        <div class="form-group">
+          <label for="inputKadesPin">PIN Rahasia Pak Kades <span class="req">*</span></label>
+          <input
+            type="password"
+            id="inputKadesPin"
+            inputmode="numeric"
+            maxlength="12"
+            placeholder="Masukkan PIN rahasia (default: 1234)"
+            required
+          />
+        </div>
+
+        <p class="edit-profile-note">
+          🔑 Mode Pak Kades membuka <strong>🎙️ Megafon Suara</strong>, pengatur suasana <strong>Pagi/Sore/Malam</strong>, <strong>mode hapus/rapikan bangunan</strong>, batas rumah warga, kontrol <strong>🏆 Lomba Mancing</strong>, dan <strong>🎆 Festival Pasar Malam</strong>.
+        </p>
+
+        <p id="kadesPinError" class="form-error" hidden></p>
+
+        <div class="edit-profile-actions">
+          <button type="button" id="btnCancelKadesPin" class="btn-secondary">Batal</button>
+          <button type="submit" id="btnSubmitKadesPin" class="btn-primary btn-save-profile">🔓 Buka Panel Kades</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Panel Kontrol Pak Kades (Admin Settings Modal) -->
+  <div id="kadesPanelModal" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="kadesPanelTitle">
+    <div class="kades-panel-card">
+      <div class="kades-panel-header">
+        <div>
+          <span class="mading-tag">👑 Panel Kontrol Admin Kampung</span>
+          <h2 id="kadesPanelTitle">Pengaturan Pak Kades</h2>
+        </div>
+        <button type="button" id="btnCloseKadesPanel" class="icon-btn light" aria-label="Tutup Panel Kades">✕</button>
+      </div>
+
+      <div class="kades-panel-body">
+        <!-- (a) Batas Maksimal Rumah per Warga -->
+        <div class="kades-section">
+          <div class="kades-section-head">
+            <h3>🏡 Batas Maksimal Rumah per Warga</h3>
+            <span id="kadesCurrentHouseLimit" class="kades-badge">Maks. 3 rumah</span>
+          </div>
+          <p class="kades-desc">Atur berapa banyak Rumah Kayu-Kaca yang boleh dibangun oleh setiap warga.</p>
+          <div id="kadesHouseLimitOptions" class="kades-pill-row">
+            <button type="button" class="kades-opt-btn" data-max-houses="1">1 Rumah</button>
+            <button type="button" class="kades-opt-btn" data-max-houses="2">2 Rumah</button>
+            <button type="button" class="kades-opt-btn" data-max-houses="3">3 Rumah</button>
+            <button type="button" class="kades-opt-btn" data-max-houses="5">5 Rumah</button>
+            <button type="button" class="kades-opt-btn" data-max-houses="0">∞ Bebas</button>
+          </div>
+        </div>
+
+        <!-- (b) Mode Hapus Bangunan (Admin) -->
+        <div class="kades-section">
+          <div class="kades-section-head">
+            <h3>🧹 Penataan Kawasan Kampung</h3>
+            <span id="kadesDeleteStateBadge" class="kades-badge">Nonaktif</span>
+          </div>
+          <p class="kades-desc">Aktifkan mode hapus untuk merapikan bangunan, pohon, atau jalan batu di peta.</p>
+          <button type="button" id="btnKadesToggleDelete" class="kades-action-btn">
+            🗑️ Aktifkan Mode Hapus Bangunan
+          </button>
+        </div>
+
+        <!-- (c) Suasana Waktu Kampung (Sinkron Semua Pemain) -->
+        <div class="kades-section">
+          <div class="kades-section-head">
+            <h3>🌤️ Suasana Waktu Kampung (Global)</h3>
+            <span class="kades-badge">Sinkron Semua Layar</span>
+          </div>
+          <p class="kades-desc">Pilihan ini langsung mengubah suasana cahaya di layar seluruh warga secara real-time.</p>
+          <div id="kadesAmbianceOptions" class="kades-ambiance-grid">
+            <button type="button" class="kades-amb-card" data-kades-ambiance="pagi">
+              <span class="ka-icon">☀️</span>
+              <span class="ka-title">Pagi Cerah</span>
+            </button>
+            <button type="button" class="kades-amb-card" data-kades-ambiance="sore">
+              <span class="ka-icon">🌤️</span>
+              <span class="ka-title">Sore Hangat</span>
+            </button>
+            <button type="button" class="kades-amb-card" data-kades-ambiance="senja">
+              <span class="ka-icon">🌙</span>
+              <span class="ka-title">Malam Berlampu</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- (d) Lomba Mancing Akhir Pekan (Kontrol Manual Kades) -->
+        <div class="kades-section">
+          <div class="kades-section-head">
+            <h3>🏆 Lomba Mancing Akhir Pekan</h3>
+            <span id="kadesTournamentBadge" class="kades-badge">Belum Dimulai</span>
+          </div>
+          <p class="kades-desc">
+            Lomba otomatis menyala setiap Sabtu–Minggu (WIB), atau Pak Kades dapat menggelar dan mengakhiri lomba kapan saja dengan pilihan durasi berikut:
+          </p>
+          <div id="kadesTournamentDurations" class="kades-pill-row" style="margin-bottom:10px">
+            <button type="button" class="kades-opt-btn" data-tourney-dur="15m">⏱️ 15 Menit</button>
+            <button type="button" class="kades-opt-btn active" data-tourney-dur="1h">🕐 1 Jam</button>
+            <button type="button" class="kades-opt-btn" data-tourney-dur="weekend">🗓️ Akhir Pekan</button>
+          </div>
+          <button type="button" id="btnKadesTournamentToggle" class="btn-primary kades-tourney-btn">
+            🏁 Mulai Lomba Mancing Manual
+          </button>
+        </div>
+
+        <!-- (d2) Mode Festival Pasar Malam (Lampu Meriah & Kembang Api) -->
+        <div class="kades-section">
+          <div class="kades-section-head">
+            <h3>🎆 Festival Pasar Malam</h3>
+            <span id="kadesFestivalBadge" class="kades-badge">Suasana Normal</span>
+          </div>
+          <p class="kades-desc">
+            Nyalakan mode Festival Pasar Malam agar lampu hias berkilau warna-warni meriah disertai efek kembang api kecil di langit peta untuk semua warga!
+          </p>
+          <button type="button" id="btnKadesFestivalToggle" class="btn-primary kades-festival-btn">
+            🎆 Nyalakan Mode Festival Pasar Malam
+          </button>
+        </div>
+
+        <!-- (d3) Pengelolaan Komplek Perumahan (Tambah Blok & Kosongkan Kavling) -->
+        <div class="kades-section">
+          <div class="kades-section-head">
+            <h3>🏘️ Komplek Perumahan (Cluster Hunian)</h3>
+            <span id="kadesClusterBadge" class="kades-badge">2 Blok · 8 Kavling</span>
+          </div>
+          <p class="kades-desc">
+            Perluas komplek dengan membuka blok kavling siap bangun baru (Blok C, Blok D), atau kosongkan kavling yang sudah terisi agar tertib tata ruang.
+          </p>
+          <button type="button" id="btnKadesAddClusterBlock" class="btn-primary kades-cluster-btn">
+            ➕ Tambah Blok Kavling Baru
+          </button>
+          <div class="kades-sub-label">🧹 Kosongkan Kavling Terisi:</div>
+          <ul id="kadesOccupiedKavlingList" class="kades-meg-list"></ul>
+        </div>
+
+        <!-- (e) Izin Megafon untuk Warga Online -->
+        <div class="kades-section">
+          <div class="kades-section-head">
+            <h3>🎙️ Akses Megafon Kampung</h3>
+            <span class="kades-badge">Push-to-Talk</span>
+          </div>
+          <p class="kades-desc">Pak Kades otomatis memiliki tombol <strong>🎙️ Megafon Kampung</strong> di layar bawah. Anda juga bisa mengaktifkan izin megafon untuk warga lain di bawah ini:</p>
+          <ul id="kadesMegaphoneList" class="kades-meg-list"></ul>
+        </div>
+      </div>
+
+      <div class="kades-panel-footer">
+        <button type="button" id="btnKadesLogout" class="btn-secondary btn-kades-logout">🔒 Keluar Mode Kades</button>
+        <button type="button" id="btnKadesDone" class="btn-primary btn-save-profile">✓ Selesai</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- KOPDES (Koperasi Desa) Modal -->
+  <div id="kopdesModal" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="kopdesTitle">
+    <div class="kades-panel-card kopdes-card">
+      <div class="kades-panel-header kopdes-header">
+        <div>
+          <span class="mading-tag">🏛️ Koperasi Desa Harmoni</span>
+          <h2 id="kopdesTitle">KOPDES Kampung Hijau</h2>
+        </div>
+        <button type="button" id="btnCloseKopdes" class="icon-btn light" aria-label="Tutup KOPDES">✕</button>
+      </div>
+
+      <div class="kades-panel-body">
+        <div class="kopdes-summary-grid">
+          <div class="kopdes-stat-box treasury">
+            <span class="ks-label">💰 Kas Bersama Kampung</span>
+            <strong id="kopdesTreasury" class="ks-value">150 Poin</strong>
+          </div>
+          <div class="kopdes-stat-box">
+            <span class="ks-label">👥 Anggota Koperasi</span>
+            <strong id="kopdesMemberCount" class="ks-value">2 Warga</strong>
+          </div>
+          <div class="kopdes-stat-box points">
+            <span class="ks-label">⭐ Poin Warga Saya</span>
+            <strong id="kopdesMyPoints" class="ks-value">0 Poin</strong>
+          </div>
+        </div>
+
+        <div class="kades-section">
+          <div class="kades-section-head">
+            <h3>🎁 Klaim Poin Harian Warga</h3>
+            <span id="kopdesClaimBadge" class="kades-badge">Tersedia Hari Ini</span>
+          </div>
+          <p class="kades-desc">
+            Klaim poin harian untuk mendapatkan <strong>+25 Poin Warga</strong> sekaligus menambah <strong>+10 Poin Kas Bersama</strong> kampung dan tercatat otomatis sebagai anggota KOPDES!
+          </p>
+          <div class="kopdes-actions-row">
+            <button type="button" id="btnKopdesClaim" class="btn-primary kopdes-claim-btn">
+              🎁 Klaim Poin Harian (+25 Poin)
+            </button>
+            <button type="button" id="btnKopdesContribute" class="btn-secondary kopdes-contrib-btn">
+              🤝 Sumbang +10 ke Kas
+            </button>
+          </div>
+        </div>
+
+        <div class="kades-section">
+          <div class="kades-section-head">
+            <h3>📋 Daftar Anggota Koperasi</h3>
+            <span class="kades-badge">Aktif</span>
+          </div>
+          <ul id="kopdesMembersList" class="kopdes-members-list"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Business (Tempat Usaha Warga) Modal -->
+  <div id="createBusinessModal" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="createBizTitle">
+    <div class="edit-profile-card">
+      <div class="edit-profile-header">
+        <div>
+          <span class="eco-pill">🏪 Zona Usaha Warga</span>
+          <h2 id="createBizTitle">Dirikan Tempat Usaha</h2>
+        </div>
+        <button type="button" id="btnCloseCreateBiz" class="icon-btn" aria-label="Tutup Form Usaha">✕</button>
+      </div>
+
+      <form id="createBusinessForm" class="edit-profile-form" autocomplete="off">
+        <div class="form-group">
+          <label for="inputBizName">Nama Usaha <span class="req">*</span></label>
+          <input
+            type="text"
+            id="inputBizName"
+            maxlength="28"
+            placeholder="Contoh: Kedai Kopi Senja, Studio Daun..."
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="inputBizCategory">Jenis Usaha <span class="req">*</span></label>
+          <select id="inputBizCategory"></select>
+        </div>
+
+        <div class="form-group">
+          <label for="inputBizPromo">Catatan / Link Promosi Singkat <span class="opt">(opsional)</span></label>
+          <textarea
+            id="inputBizPromo"
+            rows="3"
+            maxlength="160"
+            placeholder="Contoh: Kopi susu gula aren & teh herbal segar tiap sore! https://kopisenja.id"
+          ></textarea>
+        </div>
+
+        <p id="createBizError" class="form-error" hidden></p>
+
+        <div class="edit-profile-actions">
+          <button type="button" id="btnCancelCreateBiz" class="btn-secondary">Batal</button>
+          <button type="submit" id="btnSubmitCreateBiz" class="btn-primary btn-save-profile">🏪 Dirikan Usaha</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Business Profile View & Support Modal -->
+  <div id="businessProfileModal" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="bizProfileTitle">
+    <div class="edit-profile-card biz-profile-card">
+      <div class="edit-profile-header">
+        <div>
+          <span id="bizProfileCategory" class="eco-pill">☕ Kedai Kopi</span>
+          <h2 id="bizProfileTitle">Nama Usaha</h2>
+          <p id="bizProfileOwner" class="biz-owner-sub">Dimiliki oleh Warga</p>
+        </div>
+        <button type="button" id="btnCloseBizProfile" class="icon-btn" aria-label="Tutup Profil Usaha">✕</button>
+      </div>
+
+      <div class="biz-profile-body">
+        <div id="bizProfilePromo" class="biz-promo-box"></div>
+
+        <div class="biz-support-bar">
+          <div class="biz-likes-info">
+            <strong id="bizLikesCount">0</strong>
+            <span>Dukungan Warga 👍</span>
+          </div>
+          <button type="button" id="btnSupportBusiness" class="btn-primary btn-support-biz">
+            👍 Dukung / Beri Jempol
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fishing Leaderboard & Tournament Modal -->
+  <div id="fishingLeaderboardModal" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="fishBoardTitle">
+    <div class="kades-panel-card">
+      <div class="kades-panel-header fish-board-header">
+        <div>
+          <span class="mading-tag">🎣 Area Mancing Mania &amp; Lomba Akhir Pekan</span>
+          <h2 id="fishBoardTitle">Papan Peringkat Mancing</h2>
+        </div>
+        <button type="button" id="btnCloseFishBoard" class="icon-btn light" aria-label="Tutup Klasemen Mancing">✕</button>
+      </div>
+
+      <div class="kades-panel-body">
+        <div id="reigningChampionBanner" class="reigning-champ-banner" hidden>
+          <span>🏅 <strong>Juara Mancing Bertahan:</strong> <span id="reigningChampionName">-</span></span>
+        </div>
+
+        <div class="fish-tabs" role="tablist">
+          <button type="button" class="fish-tab-btn active" data-fish-tab="tournament">🏆 Klasemen Lomba</button>
+          <button type="button" class="fish-tab-btn" data-fish-tab="alltime">⭐ Top 5 Pemancing</button>
+          <button type="button" class="fish-tab-btn" data-fish-tab="history">📜 Riwayat Juara</button>
+        </div>
+
+        <!-- Tab 1: Active Tournament Standings -->
+        <div id="fishTabTournament" class="kades-section">
+          <div class="kades-section-head">
+            <h3 id="fishTourneyTabTitle">🏆 Klasemen Lomba Mancing</h3>
+            <span id="fishTourneyStatusPill" class="kades-badge">Belum Berlangsung</span>
+          </div>
+          <p id="fishTourneySubtext" class="kades-desc">
+            Lomba otomatis aktif setiap akhir pekan (Sabtu–Minggu WIB) atau dapat dimulai oleh Pak Kades lewat Menu Kades.
+          </p>
+          <ol id="tournamentStandingsList" class="fish-lb-list"></ol>
+        </div>
+
+        <!-- Tab 2: All-time Top 5 -->
+        <div id="fishTabAlltime" class="kades-section" hidden>
+          <div class="kades-section-head">
+            <h3>⭐ Top 5 Pemancing Terbaik Kampung</h3>
+            <span class="kades-badge">Sepanjang Masa</span>
+          </div>
+          <ol id="fishingLeaderboardList" class="fish-lb-list"></ol>
+        </div>
+
+        <!-- Tab 3: Past Tournament Champions History -->
+        <div id="fishTabHistory" class="kades-section" hidden>
+          <div class="kades-section-head">
+            <h3>📜 Riwayat Juara Lomba Sebelumnya</h3>
+            <span class="kades-badge">Arsip Kampung</span>
+          </div>
+          <div id="tournamentHistoryList" class="fish-history-list"></div>
+        </div>
+
+        <div class="kades-section">
+          <div class="kades-section-head">
+            <h3>🐟 Daftar Variasi Tangkapan</h3>
+            <span class="kades-badge">Acak</span>
+          </div>
+          <div class="fish-guide-pills">
+            <span class="fish-pill">🐟 Ikan Mas <strong>+10</strong></span>
+            <span class="fish-pill">🐠 Ikan Nila <strong>+15</strong></span>
+            <span class="fish-pill rare">🐟✨ Koi Emas <strong>+30</strong></span>
+            <span class="fish-pill rare">🐋✨ Lele Raksasa <strong>+50</strong></span>
+            <span class="fish-pill funny">🥾 Sepatu Bot <strong>+1</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="kades-panel-footer">
+        <button type="button" id="btnWalkToPier" class="btn-secondary">📍 Pergi ke Dermaga Mancing</button>
+        <button type="button" id="btnDoneFishBoard" class="btn-primary btn-save-profile">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tournament Winner Announcement Modal (Juara 1, 2, 3) -->
+  <div id="tournamentWinnerModal" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="winnerModalTitle">
+    <div class="edit-profile-card winner-podium-card">
+      <div class="edit-profile-header">
+        <div>
+          <span class="eco-pill kades-pill">🎉 Pengumuman Pemenang Lomba</span>
+          <h2 id="winnerModalTitle">Lomba Mancing Selesai!</h2>
+        </div>
+        <button type="button" id="btnCloseWinnerModal" class="icon-btn" aria-label="Tutup Pengumuman">✕</button>
+      </div>
+
+      <p id="winnerModalSub" class="kades-desc" style="margin-bottom:12px">
+        Selamat kepada para pemenang! Juara 1 resmi menyandang lencana <strong>🏅 Juara Mancing</strong>.
+      </p>
+
+      <ol id="winnerPodiumList" class="fish-lb-list" style="margin-bottom:16px"></ol>
+
+      <div class="edit-profile-actions">
+        <button type="button" id="btnOkWinnerModal" class="btn-primary btn-save-profile">🎊 Selamat kepada Para Juara!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Papan Direktori Warga Komplek Modal -->
+  <div id="clusterDirectoryModal" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="clusterDirTitle">
+    <div class="kades-panel-card cluster-dir-card">
+      <div class="kades-panel-header cluster-dir-header">
+        <div>
+          <span class="mading-tag">🏡 Cluster Hunian Warga</span>
+          <h2 id="clusterDirTitle">Papan Direktori Komplek</h2>
+        </div>
+        <button type="button" id="btnCloseClusterDir" class="icon-btn light" aria-label="Tutup Direktori Komplek">✕</button>
+      </div>
+
+      <div class="kades-panel-body">
+        <div class="cluster-dir-stats">
+          <div class="cd-stat">
+            <span>Total Kavling</span>
+            <strong id="cdTotalKavling">8</strong>
+          </div>
+          <div class="cd-stat">
+            <span>Sudah Terisi</span>
+            <strong id="cdOccupiedCount">0</strong>
+          </div>
+          <div class="cd-stat">
+            <span>Siap Bangun</span>
+            <strong id="cdAvailableCount">8</strong>
+          </div>
+        </div>
+
+        <p class="kades-desc" style="margin-bottom:4px">
+          Klik <strong>📍 Kunjungi Rumah</strong> untuk langsung mengarahkan karakter &amp; kamera ke rumah warga atau kavling pilihanmu.
+        </p>
+
+        <ul id="clusterDirectoryList" class="cluster-dir-list"></ul>
+      </div>
+
+      <div class="kades-panel-footer">
+        <button type="button" id="btnDirStartBuildHouse" class="btn-secondary">🏡 Bangun Rumah di Kavling</button>
+        <button type="button" id="btnDoneClusterDir" class="btn-primary btn-save-profile">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/worldConfig.js"></script>
+  <script src="/js/renderer.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

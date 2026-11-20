@@ -1,0 +1,18 @@
+{
+  "name": "kampung-hijau-harmoni",
+  "version": "1.0.0",
+  "description": "Aplikasi web permainan komunitas interaktif multiplayer real-time bertema Perkampungan Modern yang Hangat dengan Nuansa Alam Hijau",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.119.2",
+    "dotenv": "^18.0.10",
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  }
+}
